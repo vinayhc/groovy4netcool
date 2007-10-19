@@ -1,0 +1,15 @@
+Windows:
+-Install the latest release of Groovy runtime. 
+ Using the windows installer is required.
+
+Note: On windows do not use a directory with a space like "Program Files"
+-set GROOVY_HOME and JAVA_HOME environment variables.
+Note: Windows installer sets these environment variables automatically
+-Append GROOVY_HOME/bin directory to your PATH environment variable string.
+Note: Windows installer sets these environment variables automatically
+
+
+-Copy Sybase driver binary (jconn2.jar) to GROOVY_HOME/lib directory.
+-You can run sample.groovy at command line as follow:
+	groovy -cp LOCATION_OF_NETCOOL sample.groovy 
+Note: Don't forget to add netcool folder to your classpath
