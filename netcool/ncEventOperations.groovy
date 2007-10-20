@@ -5,7 +5,6 @@ class ncEventOperations {
 	def ds;
 	
 	def ncEventOperations(dsName) {
-		println dsName;	
 		ds = NetcoolDatasource.getDatasource(dsName);
 	}
 	def getSerial(eventIdentifier) {
