@@ -1,9 +1,7 @@
-/* retrieving events from netcool server
+/* adding an event to the netcool server
 *  The name of the data source refers the connection defined to access to the Netcool server. 
 */ 
 
-// first, create an instance of the ncEventOperations class, 
-// the name of the data source is passed as the parameter 
 def nc = new ncEventOperations("netcool")
 
 // define the query 
