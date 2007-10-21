@@ -1,4 +1,5 @@
-/* acknowledging an event 
+/* Copyright (C) 2007 iFountain LLC. All rights reserved.
+*  Acknowledging an event 
 *  The Serial or Identifier of the event is required
 *  The name of the data source refers the connection defined to access to the Netcool server. 
 */ 

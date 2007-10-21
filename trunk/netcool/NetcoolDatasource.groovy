@@ -1,3 +1,7 @@
+/* Copyright (C) 2007 iFountain LLC. All rights reserved.
+*  Utility class that sets up the connection to the netcool server
+*/
+
 import java.util.HashMap;
 import groovy.sql.Sql;
 
