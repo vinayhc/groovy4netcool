@@ -1,4 +1,5 @@
-/* adding an event to the netcool server
+/* Copyright (C) 2007 iFountain LLC. All rights reserved.
+*  Retrieving and processing events from the Netcool server
 *  The name of the data source refers the connection defined to access to the Netcool server. 
 */ 
 

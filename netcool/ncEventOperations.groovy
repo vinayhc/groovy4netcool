@@ -1,3 +1,7 @@
+/* Copyright (C) 2007 iFountain LLC. All rights reserved.
+*  Utility class that provides the methods to work with netcool events
+*/
+
 import groovy.sql.Sql;
 
 class ncEventOperations {
