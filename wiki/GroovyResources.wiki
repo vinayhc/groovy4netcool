@@ -1,0 +1,6 @@
+
+[http://groovy.codehaus.org Groovy website]
+
+[http://www.manning.com/koenig/ Groovy In Action book] is available as available both as print and as ebook.
+
+
