@@ -7,8 +7,8 @@ import groovy.sql.Sql;
 class ncEvent {
 	// the fields of the Netcool alerts.status table that will be available in the scripts 
 	// should be defined here. 
-	Integer serial,ownerUID,ownerGID,type,acknowledged,severity,suppressEscl,flash,expireTime;
-	String summary,manager,alertKey,node,nodeAlias,location,agent,alertGroup,identifier,customer,service;
+	Integer serial,ownerUID,ownerGID,type,acknowledged,severity,suppressEscl,flash,expireTime,taskList;
+	String summary,manager,alertKey,node,nodeAlias,location,agent,alertGroup,identifier,customer,service,url;
 	def ds;
 	def update() {
 		def query = "update alerts.status set Summary='" + summary + 
@@ -28,6 +28,7 @@ class ncEvent {
 		", ExpireTime=" + expireTime + 
 		", OwnerUID=" + ownerUID + 
 		", Severity=" + severity + 
+		", TaskList=" + taskList + 
 		", SuppressEscl=" + suppressEscl + 
 		", OwnerGID=" + ownerGID + 
 		" where Serial=" + serial;
@@ -50,6 +51,11 @@ class ncEvent {
 			serial = it.Serial;
 			identifier = it.Identifier.trim();
 			summary = it.Summary.trim();
+			nodeAlias = it.NodeAlias.trim();
+			location = it.Location.trim();
+			url = it.URL.trim();
+			customer = it.Customer.trim();
+			service = it.Service.trim();
 			suppressEscl = it.SuppressEscl;
 			acknowledged = it.Acknowledged;
 			manager = it.Manager.trim();
@@ -58,6 +64,9 @@ class ncEvent {
 			agent = it.Agent.trim();
 			type = it.Type;
 			severity = it.Severity;
+			taskList = it.TaskList;
+			expireTime = it.ExpireTime;
+			flash = it.Flash;
 			alertGroup = it.AlertGroup.trim();
 			ownerUID = it.OwnerUID;
 			ownerGID = it.OwnerGID;
