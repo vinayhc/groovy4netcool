@@ -1,0 +1,38 @@
+None of the files in this project are required to use groovy to work with Netcool Omnibus server. Groovy language has inherent support for sql/jdbc.
+The objective of this project is to provide some infrastructure so that one does not have to deal with JDBC and SQL, though they are available.
+
+===JDBC Connection===
+[http://groovy4netcool.googlecode.com/svn/trunk/netcool/NetcoolDatasource.groovy NetcoolDataSource.groovy] file sets JDBC connection to the Netcool server. The parameters for the connection (should be set in this file.
+static def datasourceParams = [
+   "netcool": ["url":"jdbc:sybase:Tds:*host:port*?LITERAL_PARAMS=true", "username":"*nameoftheuser*", "password":"*passwordoftheuser*"]
+   ];
+
+===Wrapper===
+[http://groovy4netcool.googlecode.com/svn/trunk/netcool/ncEvent.groovy ncEvent.groovy] script is a wrapper that allows working with Netcool events without using SQL.
+
+===example===
+{{{
+// first, create an instance of the ncEvent class 
+// the name of the data source can be passed as a parameter if there is more than one.
+// def myEvent = new ncEvent("netcool")
+def myEvent = new ncEvent()
+
+// if the value of Serial field is not available but Identifier is, 
+// get the Serial using the Identifier
+// myEvent.serial = myEvent.getSerial("Router1Down");
+
+// get an instance of an event by passing serial as the parameter
+myEvent.getEvent(713)
+
+// event fields are now accessible as myEvent.severity, myEvent.summary, etc.
+println("Identifier: " + myEvent.identifier + " Summary: " + myEvent.summary)
+
+// set the values for event fields.
+myEvent.severity = 4
+myEvent.summary = "the new summary 2"
+
+// call the update method to update the event in Netcool
+myEvent.update()
+
+println("Identifier: " + myEvent.identifier + " Summary: " + myEvent.summary)
+}}}
