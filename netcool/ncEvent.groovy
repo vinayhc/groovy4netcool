@@ -5,18 +5,27 @@
 import groovy.sql.Sql;
 
 class ncEvent {
-	Integer serial,ownerUID,ownerGID,type,acknowledged,severity,suppressEscl;
-	String summary,manager,alertKey,node,agent,alertGroup,identifier;
+	// the fields of the Netcool alerts.status table that will be available in the scripts 
+	// should be defined here. 
+	Integer serial,ownerUID,ownerGID,type,acknowledged,severity,suppressEscl,flash,expireTime;
+	String summary,manager,alertKey,node,nodeAlias,location,agent,alertGroup,identifier,customer,service;
 	def ds;
 	def update() {
 		def query = "update alerts.status set Summary='" + summary + 
 		"', Manager='" + manager + 
 		"', AlertKey='" + alertKey + 
 		"', Node='" + node + 
+		"', NodeAlias='" + nodeAlias + 
+		"', Customer='" + customer + 
+		"', Service='" + service + 
+		"', URL='" + url + 
 		"', Agent='" + agent + 
 		"', AlertGroup='" + alertGroup + 
 		"', Acknowledged=" + acknowledged + 
 		", Type=" + type + 
+		", OwnerUID=" + ownerUID + 
+		", Flash=" + flash + 
+		", ExpireTime=" + expireTime + 
 		", OwnerUID=" + ownerUID + 
 		", Severity=" + severity + 
 		", SuppressEscl=" + suppressEscl + 
