@@ -3,13 +3,13 @@
 *  The name of the data source refers the connection defined to access to the Netcool server. 
 */ 
 
-def nc = new ncEventOperations("netcool")
+def nc = new ncEvent()
 
 // define the query 
-def selectSql = "select * from alerts.status where Identifier like 'berkay' and Severity = 5"
+def selectSql = "select * from alerts.status where Identifier like 'berkay' and Severity = 3"
 
 // walk through each of the records in the result set with eachRow.
 nc.ds.eachRow(selectSql)
 {
-	println it.Identifier+it.Summary+it.Severity;
+	println it.Identifier.trim() + " - " + it.Summary.trim() + " - " + it.Severity;
 };

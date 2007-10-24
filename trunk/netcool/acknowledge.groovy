@@ -13,11 +13,14 @@ myEvent = new ncEvent()
 // myEvent.serial = myEvent.getSerial("Router1Down");
 
 // get an instance of an event by passing serial as the parameter
-myEvent.getEvent(713)
+myEvent.getEvent(499)
 
-// call the setSeverity method and pass the severity value.
-myEvent.acknowledge = 1
+// set the acknowledged property of the event object
+myEvent.acknowledged = 1
 
-// write to the journal
+// call the update method to update the event in the netcool server.
+myEvent.update()
+
+// write to the journal using addToJournal method
 userName = "berkay"
 myEvent.addToJournal("Alert acknowledged by " + userName)
