@@ -1,147 +1,140 @@
 /* Copyright (C) 2007 iFountain LLC. All rights reserved.
-*  Utility class that provides the methods to work with netcool events
+*  Utility class to work with netcool events
 */
 
 import groovy.sql.Sql;
+import org.apache.commons.lang.StringUtils;
 
 class ncEvent {
-	// the fields of the Netcool alerts.status table that will be available in the scripts 
-	// should be defined here. 
-	Integer serial,ownerUID,ownerGID,type,acknowledged,severity,suppressEscl,flash,expireTime,taskList;
-	String summary,manager,alertKey,node,nodeAlias,location,agent,alertGroup,identifier,customer,service,url;
 	def ds;
-	def update() {
-		def query = "update alerts.status set Summary='" + summary + 
-		"', Manager='" + manager + 
-		"', AlertKey='" + alertKey + 
-		"', Node='" + node + 
-		"', NodeAlias='" + nodeAlias + 
-		"', Customer='" + customer + 
-		"', Service='" + service + 
-		"', URL='" + url + 
-		"', Agent='" + agent + 
-		"', AlertGroup='" + alertGroup + 
-		"', Acknowledged=" + acknowledged + 
-		", Type=" + type + 
-		", OwnerUID=" + ownerUID + 
-		", Flash=" + flash + 
-		", ExpireTime=" + expireTime + 
-		", OwnerUID=" + ownerUID + 
-		", Severity=" + severity + 
-		", TaskList=" + taskList + 
-		", SuppressEscl=" + suppressEscl + 
-		", OwnerGID=" + ownerGID + 
-		" where Serial=" + serial;
-		println(query);
-		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
-		}
-	}	
+	def eventFields = [:];
+	def eventFieldList = [:];
 	def ncEvent(dsName) {
 		ds = NetcoolDatasource.getDatasource(dsName);
+		ds.query("select * from alerts.status") { rs ->
+			def meta = rs.metaData
+			for (i in 0..<meta.columnCount) {
+				eventFieldList.put(meta.getColumnLabel(i+1),meta.getColumnType(i+1));
+			}
+		}
 	}
 	def ncEvent() {
 		ds = NetcoolDatasource.getDatasource("netcool");
+		ds.query("select * from alerts.status") { rs ->
+			def meta = rs.metaData
+			for (i in 0..<meta.columnCount) {
+				eventFieldList.put(meta.getColumnLabel(i+1),meta.getColumnType(i+1));
+			}
+		}
 	}
+	Object get (String fieldName) {
+		return eventFields.get(fieldName);
+	}
+	void set (String fieldName, Object fieldValue) {
+		println fieldName + fieldValue;
+		eventFields.put(fieldName, fieldValue);	
+		println eventFields;
+	}
+	def update() {
+		def query = "update alerts.status set "; 
+		eventFieldList.each { f ->
+			if (f.key != "Serial" && f.key != "Identifier") {
+				if (f.value == 4) {
+					query = query + f.key + "=" + eventFields[f.key] + ", "
+				} else if (f.value == 12) {
+					query = query + f.key + "='" + eventFields[f.key] + "', "
+				}
+			}
+		}
+		query = StringUtils.substringBeforeLast(query,",") + " where Serial=" + eventFields.Serial;
+		println(query);
+		if(ds.executeUpdate(query) == 0){
+		   throw new Exception("No event with Serial <" + Serial + "> exists.") 
+		}
+	}	
 	def getEvent(s)
 	{
 		def selectSql = "select * from alerts.status where Serial=" + s;
-		ds.eachRow(selectSql)
-		{
-			serial = it.Serial;
-			identifier = it.Identifier.trim();
-			summary = it.Summary.trim();
-			nodeAlias = it.NodeAlias.trim();
-			location = it.Location.trim();
-			url = it.URL.trim();
-			customer = it.Customer.trim();
-			service = it.Service.trim();
-			suppressEscl = it.SuppressEscl;
-			acknowledged = it.Acknowledged;
-			manager = it.Manager.trim();
-			alertKey = it.AlertKey.trim();
-			node = it.Node.trim();
-			agent = it.Agent.trim();
-			type = it.Type;
-			severity = it.Severity;
-			taskList = it.TaskList;
-			expireTime = it.ExpireTime;
-			flash = it.Flash;
-			alertGroup = it.AlertGroup.trim();
-			ownerUID = it.OwnerUID;
-			ownerGID = it.OwnerGID;
-		};
+		ds.eachRow(selectSql) { r ->
+			eventFieldList.each { f ->
+				if (f.value == 4) {
+					eventFields.put(f.key, r[f.key]);	
+				} else if (f.value == 12) {
+					eventFields.put(f.key, r[f.key].trim());	
+				}
+			}
+		}
 	}	
 	def getSerial(eventIdentifier) {
 		def selectSql = "select Serial from alerts.status where Identifier= '" +eventIdentifier + "'";
-		ds.eachRow(selectSql){serial = it.Serial;};
-		println("serial "+serial);
-		if(serial == null){
+		ds.eachRow(selectSql){eventFields.Serial = it.Serial;};
+		println("Serial " + eventFields.Serial);
+		if(eventFields.Serial == null){
 		    throw new Exception("No event with Identififer <" + eventIdentifier + "> exists.") 
 		}
-		return serial;
+		return eventFields.Serial;
 	}		
 	def changeSeverity(sev) {
-		def query = "update alerts.status set Acknowledged=0, Severity=" + sev + " where Serial=" + serial;
+		def query = "update alerts.status set Acknowledged=0, Severity=" + sev + " where Serial=" + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def addToTaskList() {
-		def query = "update alerts.status set TaskList=1 where Serial=" + serial;
+		def query = "update alerts.status set TaskList=1 where Serial=" + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def removeFromTaskList() {
-		def query = "update alerts.status set TaskList=0 where Serial=" + serial;
+		def query = "update alerts.status set TaskList=0 where Serial=" + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def suppressEscl(priority) {	
-		def query = "update alerts.status set SuppressEscl=" + priority + " where Serial = " + serial;
+		def query = "update alerts.status set SuppressEscl=" + eventFields.priority + " where Serial = " + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def addToJournal(statusText) {
 		int date = (new Date().getTime())/1000;
-		def keyField = serial + ":0:" + date;
+		def keyField = eventFields.Serial + ":0:" + date;
 		def query = "insert into alerts.journal( Serial , KeyField, Chrono, Text1) values (" + 
-		        	serial + " ,'" + keyField + "' , " + date + " ,  '" + statusText + "')";		
+		        	eventFields.Serial + " ,'" + keyField + "' , " + date + " ,  '" + statusText + "')";		
 		ds.executeUpdate(query);		
 	}
 	def acknowledge() {
-		def query = "update alerts.status set Acknowledged=1 where Serial=" + serial;
+		def query = "update alerts.status set Acknowledged=1 where Serial=" + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def deacknowledge() {
-		def query = "update alerts.status set Acknowledged=0 where Serial=" + serial;
+		def query = "update alerts.status set Acknowledged=0 where Serial=" + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def assignToUser(userID) {
-		def query = "update alerts.status set Acknowledged=0, OwnerUID=" + userID + " where Serial=" + serial;
+		def query = "update alerts.status set Acknowledged=0, OwnerUID=" + userID + " where Serial=" + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def assignToGroup(groupID) {
-		def query = "update alerts.status set OwnerUID=65534,Acknowledged=0,OwnerGID=" + groupID + "where Serial=" + serial;
+		def query = "update alerts.status set OwnerUID=65534,Acknowledged=0,OwnerGID=" + groupID + "where Serial=" + eventFields.Serial;
 		println(query);
 		if(ds.executeUpdate(query) == 0){
-		   throw new Exception("No event with Serial <" + serial + "> exists.") 
+		   throw new Exception("No event with Serial <" + eventFields.Serial + "> exists.") 
 		}
 	}
 	def getUID(userName) {

@@ -11,20 +11,20 @@ def myEvent = new ncEvent()
 
 // if the value of Serial field is not available but Identifier is, 
 // get the Serial using the Identifier
-// myEvent.serial = myEvent.getSerial("Router1Down");
+// myEvent.Serial = myEvent.getSerial("Router1Down");
 
 // get an instance of an event by passing serial as the parameter
 myEvent.getEvent(713)
 
 // event fields are now accessible as myEvent.severity, myEvent.summary, etc.
-println("Identifier: " + myEvent.identifier + " Summary: " + myEvent.summary)
+println("Identifier: " + myEvent.Identifier + " Summary: " + myEvent.Summary)
 
 // set the values for event fields.
-myEvent.severity = 4
-myEvent.summary = "the new summary 2"
+myEvent.Severity = 4
+myEvent.Summary = "the new summary 2"
 
 // call the update method to update the event in Netcool
 myEvent.update()
 
-println("Identifier: " + myEvent.identifier + " Summary: " + myEvent.summary)
+println("Identifier: " + myEvent.Identifier + " Summary: " + myEvent.Summary)
 
