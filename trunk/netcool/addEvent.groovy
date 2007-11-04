@@ -8,7 +8,7 @@ def ds = NetcoolDatasource.getDatasource("netcool")
 def ncEvent = ds.dataSet('alerts.status')
 Integer t = (new Date().getTime())/1000
 ncEvent.add (
-	Identifier: "berkay334", 
+	Identifier: "berkay434", 
 	Node: "berkay", 
 	Severity: 5, 
 	Summary: "created by berkay", 

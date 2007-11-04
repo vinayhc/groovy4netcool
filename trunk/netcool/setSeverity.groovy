@@ -10,13 +10,13 @@ myEvent = new ncEvent()
 
 // if the value of Serial field is not available but Identifier is, 
 // get the Serial using the Identifier
-// myEvent.serial = myEvent.getSerial("Router1Down");
+// myEvent.Serial = myEvent.getSerial("Router1Down");
 
 // get an instance of an event by passing serial as the parameter
 myEvent.getEvent(499)
 
 // set the severity property of the event object
-myEvent.severity = 5
+myEvent.Severity = 5
 
 // call the update method to update the event in the netcool server.
 myEvent.update()
