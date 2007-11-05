@@ -1,3 +1,4 @@
+#labels Phase-Implementation
 None of the files in this project are required to use groovy to work with Netcool Omnibus server. Groovy language has inherent support for sql/jdbc.
 The objective of this project is to provide some infrastructure so that one does not have to deal with JDBC and SQL, though they are available.
 
@@ -12,27 +13,28 @@ static def datasourceParams = [
 
 ===example===
 {{{
-// first, create an instance of the ncEvent class 
-// the name of the data source can be passed as a parameter if there is more than one.
-// def myEvent = new ncEvent("netcool")
-def myEvent = new ncEvent()
+// first, create an instance of the NetcoolAdapter class 
+// the name of the data source can be passed as a parameter if not the default "netcool"
+// def ncAdapter = new NetcoolAdapter("netcool")
+def ncAdapter = new NetcoolAdapter()
 
 // if the value of Serial field is not available but Identifier is, 
 // get the Serial using the Identifier
-// myEvent.serial = myEvent.getSerial("Router1Down");
+// serial = ncAdapter.getSerial("Router1Down");
+def serial = 719
 
-// get an instance of an event by passing serial as the parameter
-myEvent.getEvent(713)
+// create an instance of a netcool event object 
+def myEvent = ncAdapter.getEvent(serial)
+
 
 // event fields are now accessible as myEvent.severity, myEvent.summary, etc.
 println("Identifier: " + myEvent.identifier + " Summary: " + myEvent.summary)
 
 // set the values for event fields.
-myEvent.severity = 4
-myEvent.summary = "the new summary 2"
+// setting the value of the property updates the event on the server immediately
+// each statement below is an update call to the server.
+myEvent.Severity = 4 
+myEvent.Summary = "the new summary 2"
 
-// call the update method to update the event in Netcool
-myEvent.update()
-
-println("Identifier: " + myEvent.identifier + " Summary: " + myEvent.summary)
+println("Identifier: " + myEvent.Identifier + " Summary: " + myEvent.Summary)
 }}}
