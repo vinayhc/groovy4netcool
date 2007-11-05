@@ -9,7 +9,7 @@ class NetcoolDatasource
 {
 	static def datasourceParams = [
 		"netcool": ["url":"jdbc:sybase:Tds:192.168.1.44:4100?LITERAL_PARAMS=true", "username":"root", "password":"root"]
-		];
+	];
 	static String databaseDriver = "com.sybase.jdbc2.jdbc.SybDriver";
 	static String referenceTable = "catalog.base_tables";
 	static HashMap connections = new HashMap(); 
